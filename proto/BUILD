@@ -1,4 +1,4 @@
-load("@ts_protoc_gen//:defs.bzl", "typescript_proto_library")
+load("@flow_protoc_gen//:defs.bzl", "flowtype_proto_library")
 package(default_visibility = ["//visibility:public"])
 
 filegroup(
@@ -13,7 +13,7 @@ proto_library(
   ],
 )
 
-typescript_proto_library(
+flowtype_proto_library(
   name = "generate",
   proto = ":proto",
 )

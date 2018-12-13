@@ -5,7 +5,7 @@ load("@build_bazel_rules_nodejs//:defs.bzl", "npm_install")
 def declare_file(ctx, filename, file_modifications):
   f = ctx.actions.declare_file(filename)
 
-  # Removes an import that protoc-gen-ts adds that is not needed
+  # Removes an import that protoc-gen-flow adds that is not needed
   for removal in ctx.attr.remove_dependencies:
     file_modifications.append("echo \"$(grep -v \"%s\" %s)\" > %s" % (removal, f.path, f.path))
 
@@ -49,14 +49,14 @@ def _typescript_proto_library_impl(ctx):
     file_modifications.append("echo \"No services generated\"")
 
   inputs = depset([ctx.file._protoc])
-  inputs += ctx.files._ts_protoc_gen
+  inputs += ctx.files._flow_protoc_gen
   inputs += ctx.attr.proto.proto.transitive_descriptor_sets
 
   descriptor_sets = [desc.path for desc in ctx.attr.proto.proto.transitive_descriptor_sets]
 
-  ts_out = "service=true:"
+  flow_out = "service=true:"
 
-  protoc_command = "%s --plugin=protoc-gen-ts=%s --ts_out=%s%s --js_out=import_style=commonjs,binary:%s --descriptor_set_in=%s %s" % (ctx.file._protoc.path, ctx.files._ts_protoc_gen[1].path, ts_out, ctx.var["BINDIR"], ctx.var["BINDIR"], ":".join(descriptor_sets), " ".join(proto_inputs))
+  protoc_command = "%s --plugin=protoc-gen-flow=%s --flow_out=%s%s --js_out=import_style=commonjs,binary:%s --descriptor_set_in=%s %s" % (ctx.file._protoc.path, ctx.files._flow_protoc_gen[1].path, flow_out, ctx.var["BINDIR"], ctx.var["BINDIR"], ":".join(descriptor_sets), " ".join(proto_inputs))
 
   ctx.actions.run_shell(
     inputs = inputs,
@@ -93,11 +93,11 @@ typescript_proto_library = rule(
       mandatory = False,
       default = False,
     ),
-    "_ts_protoc_gen": attr.label(
+    "_flow_protoc_gen": attr.label(
       allow_files = True,
       executable = True,
       cfg = "host",
-      default = Label("@ts_protoc_gen//bin:protoc-gen-ts"),
+      default = Label("@flow_protoc_gen//bin:protoc-gen-flow"),
     ),
     "_protoc": attr.label(
       allow_files = True,
@@ -111,11 +111,11 @@ typescript_proto_library = rule(
 )
 
 def typescript_proto_dependencies():
-  """To be run in user's WORKSPACE to install ts-protoc-gen dependencies.
+  """To be run in user's WORKSPACE to install flow-protoc-gen dependencies.
 """
 
   npm_install(
     name = "deps",
-    package_json = "@ts_protoc_gen//:package.json",
-    package_lock_json = "@ts_protoc_gen//:package-lock.json",
+    package_json = "@flow_protoc_gen//:package.json",
+    package_lock_json = "@flow_protoc_gen//:package-lock.json",
   )

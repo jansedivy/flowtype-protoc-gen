@@ -1,6 +1,6 @@
 #!/bin/bash -e
 # release.sh
-# Automates releases of ts-protoc-gen
+# Automates releases of flow-protoc-gen
 
 function die() {
   echo ERROR: "$1"
