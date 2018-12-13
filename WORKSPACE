@@ -28,8 +28,8 @@ git_repository(
 load("@build_bazel_rules_nodejs//:defs.bzl", "node_repositories")
 node_repositories(package_json = ["//:package.json"])
 
-load("@flow_protoc_gen//:defs.bzl", "flow_proto_dependencies")
-flow_proto_dependencies()
+load("@flow_protoc_gen//:defs.bzl", "flowtype_proto_dependencies")
+flowtype_proto_dependencies()
 
 git_repository(
   name = "build_bazel_rules_typescript",

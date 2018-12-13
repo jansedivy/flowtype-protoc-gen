@@ -75,7 +75,7 @@ def _flow_proto_library_impl(ctx):
     files = depset(outputs),
   )
 
-flow_proto_library = rule(
+flowtype_proto_library = rule(
   attrs = {
     "proto": attr.label(
       mandatory = True,
@@ -110,7 +110,7 @@ flow_proto_library = rule(
     implementation = _flow_proto_library_impl,
 )
 
-def flow_proto_dependencies():
+def flowtype_proto_dependencies():
   """To be run in user's WORKSPACE to install flow-protoc-gen dependencies.
 """
 

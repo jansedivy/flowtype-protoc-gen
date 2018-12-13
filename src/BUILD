@@ -1,7 +1,7 @@
 package(default_visibility=["//visibility:public"])
-load("@build_bazel_rules_typescript//:defs.bzl", "flow_library")
+load("@build_bazel_rules_typescript//:defs.bzl", "typescript_library")
 
-flow_library(
+typescript_library(
     name = "src",
     node_modules = "@deps//:node_modules",
     srcs = glob([
