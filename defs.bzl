@@ -26,12 +26,12 @@ def proto_path(proto):
   return path
 
 def append_to_outputs(ctx, file_name, outputs, file_modifications):
-  generated_filenames = ["_pb.d.ts", "_pb.js", "_pb_service.js", "_pb_service.d.ts"]
+  generated_filenames = ["_pb.d.ts", "_pb.js", "_pd.flow.js", "_pb_service.js", "_pb_service.d.ts"]
 
   for f in generated_filenames:
     outputs.append(declare_file(ctx, file_name + f, file_modifications))
 
-def _typescript_proto_library_impl(ctx):
+def _flow_proto_library_impl(ctx):
   outputs = []
   proto_inputs = []
   file_modifications = []
@@ -61,7 +61,7 @@ def _typescript_proto_library_impl(ctx):
   ctx.actions.run_shell(
     inputs = inputs,
     outputs = outputs,
-    progress_message = "Creating Typescript pb files %s" % ctx.label,
+    progress_message = "Creating Flowtype pb files %s" % ctx.label,
     command = "%s && %s" % (protoc_command, " && ".join(file_modifications)),
   )
 
@@ -75,7 +75,7 @@ def _typescript_proto_library_impl(ctx):
     files = depset(outputs),
   )
 
-typescript_proto_library = rule(
+flow_proto_library = rule(
   attrs = {
     "proto": attr.label(
       mandatory = True,
@@ -107,10 +107,10 @@ typescript_proto_library = rule(
       default = Label("@com_google_protobuf//:protoc"),
     ),
   },
-    implementation = _typescript_proto_library_impl,
+    implementation = _flow_proto_library_impl,
 )
 
-def typescript_proto_dependencies():
+def flow_proto_dependencies():
   """To be run in user's WORKSPACE to install flow-protoc-gen dependencies.
 """
 
