@@ -20,7 +20,6 @@ export function printFileDescriptorFlowJson(fileDescriptor: FileDescriptorProto,
   const upToRoot = getPathToRoot(fileName);
 
   printer.printEmptyLn();
-  printer.printLn(`import * as jspb from "google-protobuf";`);
 
   fileDescriptor.getDependencyList().forEach((dependency: string) => {
     const pseudoNamespace = filePathToPseudoNamespace(dependency);
