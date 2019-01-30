@@ -54,7 +54,7 @@ def _typescript_proto_library_impl(ctx):
 
   descriptor_sets = [desc.path for desc in ctx.attr.proto.proto.transitive_descriptor_sets]
 
-  ts_out = "service=true:"
+  ts_out = "ts=true,service=true:"
 
   protoc_command = "%s --plugin=protoc-gen-flow=%s --flow_out=%s%s --js_out=import_style=commonjs,binary:%s --descriptor_set_in=%s %s" % (ctx.file._protoc.path, ctx.files._ts_protoc_gen[1].path, ts_out, ctx.var["BINDIR"], ctx.var["BINDIR"], ":".join(descriptor_sets), " ".join(proto_inputs))
 
