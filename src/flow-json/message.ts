@@ -49,9 +49,6 @@ export function printMessage(fileName: string, exportMap: ExportMap, messageDesc
   toObjectType.printLn(`export type ${messageName}$${objectTypeName} = {`);
 
   const printer = new Printer(indentLevel);
-  printer.printEmptyLn();
-  printer.printLn(`export class ${messageName} extends jspb.Message {`);
-
   const oneOfGroups: Array<Array<FieldDescriptorProto>> = [];
 
   messageDescriptor.getFieldList().forEach(field => {
@@ -90,8 +87,6 @@ export function printMessage(fileName: string, exportMap: ExportMap, messageDesc
         if (valueType === ENUM_TYPE) {
           valueTypeName = `$Values<typeof ${valueTypeName}>`;
         }
-        printer.printIndentedLn(`get${withUppercase}Map: () => jspb.Map<${keyTypeName}, ${valueTypeName}>;`);
-        printer.printIndentedLn(`clear${withUppercase}Map: () => void;`);
         if (valueType === MESSAGE_TYPE) {
           valueTypeName += `$${objectTypeName}`;
         }
@@ -136,42 +131,29 @@ export function printMessage(fileName: string, exportMap: ExportMap, messageDesc
     function printClearIfNotPresent() {
       if (!hasClearMethod) {
         hasClearMethod = true;
-        printer.printIndentedLn(`clear${withUppercase}${field.getLabel() === FieldDescriptorProto.Label.LABEL_REPEATED ? "List" : ""}: () => void;`);
       }
     }
 
     if (hasFieldPresence(field, fileDescriptor)) {
-      printer.printIndentedLn(`has${withUppercase}: () => boolean;`);
       printClearIfNotPresent();
     }
 
     function printRepeatedAddMethod(valueType: string) {
       const optionalValue = field.getType() === MESSAGE_TYPE;
-      printer.printIndentedLn(`add${withUppercase}: (value${optionalValue ? "?" : ""}: ${valueType}, index?: number) => ${valueType};`);
     }
 
     if (field.getLabel() === FieldDescriptorProto.Label.LABEL_REPEATED) {// is repeated
       printClearIfNotPresent();
       if (type === BYTES_TYPE) {
         toObjectType.printIndentedLn(`${camelCaseName}List: Array<Uint8Array | string>,`);
-        printer.printIndentedLn(`get${withUppercase}List: () => Array<Uint8Array | string>;`);
-        printer.printIndentedLn(`get${withUppercase}List_asU8: () => Array<Uint8Array>;`);
-        printer.printIndentedLn(`get${withUppercase}List_asB64: () => Array<string>;`);
-        printer.printIndentedLn(`set${withUppercase}List: (value: Array<Uint8Array | string>) => void;`);
         printRepeatedAddMethod("Uint8Array | string");
       } else {
         toObjectType.printIndentedLn(`${camelCaseName}List: Array<${exportType}${type === MESSAGE_TYPE ? `$${objectTypeName}` : ""}>,`);
-        printer.printIndentedLn(`get${withUppercase}List: () => Array<${exportType}>;`);
-        printer.printIndentedLn(`set${withUppercase}List: (value: Array<${exportType}>) => void;`);
         printRepeatedAddMethod(exportType);
       }
     } else {
       if (type === BYTES_TYPE) {
         toObjectType.printIndentedLn(`${camelCaseName}: Uint8Array | string,`);
-        printer.printIndentedLn(`get${withUppercase}: () => Uint8Array | string;`);
-        printer.printIndentedLn(`get${withUppercase}_asU8: () => Uint8Array;`);
-        printer.printIndentedLn(`get${withUppercase}_asB64: () => string;`);
-        printer.printIndentedLn(`set${withUppercase}: (value: Uint8Array | string) => void;`);
       } else {
         let fieldObjectType = exportType;
         let canBeUndefined = false;
@@ -187,30 +169,15 @@ export function printMessage(fileName: string, exportMap: ExportMap, messageDesc
         }
         const fieldObjectName = normaliseFieldObjectName(camelCaseName);
         toObjectType.printIndentedLn(`${fieldObjectName}${canBeUndefined ? "?" : ""}: ${fieldObjectType},`);
-        printer.printIndentedLn(`get${withUppercase}: () => ${canBeUndefined ? "?" : ""}${exportType};`);
-        printer.printIndentedLn(`set${withUppercase}: (value${type === MESSAGE_TYPE ? "?" : ""}: ${exportType}) => void;`);
       }
     }
-    printer.printEmptyLn();
   });
 
   toObjectType.printLn(`}`);
 
-  messageDescriptor.getOneofDeclList().forEach(oneOfDecl => {
-    printer.printIndentedLn(`get${oneOfName(oneOfDecl.getName())}Case: () => $Values<typeof ${messageName}_${oneOfName(oneOfDecl.getName())}Case>;`);
-  });
+  // messageDescriptor.getOneofDeclList().forEach(oneOfDecl => {
 
-  printer.printIndentedLn(`serializeBinary: () => Uint8Array;`);
-  printer.printIndentedLn(`toObject: (includeInstance?: boolean) => ${messageName}$${objectTypeName};`);
-  printer.printIndentedLn(`static toObject: (includeInstance: boolean, msg: ${messageName}) => ${messageName}$${objectTypeName};`);
-  printer.printIndentedLn(`static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};`);
-  printer.printIndentedLn(`static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};`);
-  printer.printIndentedLn(`static serializeBinaryToWriter: (message: ${messageName}, writer: jspb.BinaryWriter) => void;`);
-  printer.printIndentedLn(`static deserializeBinary: (bytes: Uint8Array) => ${messageName};`);
-  printer.printIndentedLn(`static deserializeBinaryFromReader: (message: ${messageName}, reader: jspb.BinaryReader) => ${messageName};`);
-
-  printer.printLn(`}`);
-  printer.printEmptyLn();
+  // });
 
   printer.print(toObjectType.getOutput());
 
