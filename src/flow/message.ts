@@ -87,14 +87,14 @@ export function printMessage(fileName: string, exportMap: ExportMap, messageDesc
         if (valueType === BYTES_TYPE) {
           valueTypeName = "Uint8Array | string";
         }
-        if (valueType === MESSAGE_TYPE) {
-          valueTypeName += `$${objectTypeName}`;
-        }
         if (valueType === ENUM_TYPE) {
           valueTypeName = `$Values<typeof ${valueTypeName}>`;
         }
         printer.printIndentedLn(`get${withUppercase}Map: () => jspb.Map<${keyTypeName}, ${valueTypeName}>;`);
         printer.printIndentedLn(`clear${withUppercase}Map: () => void;`);
+        if (valueType === MESSAGE_TYPE) {
+          valueTypeName += `$${objectTypeName}`;
+        }
         toObjectType.printIndentedLn(`${camelCaseName}Map: Array<[${keyTypeName}${keyType === MESSAGE_TYPE ? `$${objectTypeName}` : ""}, ${valueTypeName}]>,`);
         return;
       }
