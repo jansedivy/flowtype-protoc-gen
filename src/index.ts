@@ -1,6 +1,6 @@
 import {printFileDescriptorTSD} from "./ts/fileDescriptorTSD";
 import {printFileDescriptorFlow} from "./flow/fileDescriptorFlow";
-import {printFileDescriptorFlowJson} from "./flow-json/fileDescriptorFlowJson"
+import { printFileDescriptorFlowJson } from "./flow-json/fileDescriptorFlowJson";
 import {ExportMap} from "./ExportMap";
 import {replaceProtoSuffix, withAllStdIn} from "./util";
 import {CodeGeneratorRequest, CodeGeneratorResponse} from "google-protobuf/google/protobuf/compiler/plugin_pb";
