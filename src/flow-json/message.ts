@@ -35,7 +35,6 @@ function hasFieldPresence(field: FieldDescriptorProto, fileDescriptor: FileDescr
 }
 
 export function printMessage(fileName: string, exportMap: ExportMap, messageDescriptor: DescriptorProto, indentLevel: number, fileDescriptor: FileDescriptorProto, prefixName?: string) {
-  const classTypeName = `AsClass`;
 
   const messageName = prefixName && prefixName !== "" ? `${prefixName}_${messageDescriptor.getName() + "$AsClass"}` : messageDescriptor.getName() + "$AsClass";
   const messageOptions = messageDescriptor.getOptions();
@@ -44,9 +43,8 @@ export function printMessage(fileName: string, exportMap: ExportMap, messageDesc
     return "";
   }
 
-  const objectTypeName = `AsObject`;
   const toObjectType = new Printer(indentLevel);
-  toObjectType.printLn(`export type ${messageName}$${objectTypeName} = {`);
+  toObjectType.printLn(`export type ${messageName} = {`);
 
   const printer = new Printer(indentLevel);
   const oneOfGroups: Array<Array<FieldDescriptorProto>> = [];
@@ -87,17 +85,14 @@ export function printMessage(fileName: string, exportMap: ExportMap, messageDesc
         if (valueType === ENUM_TYPE) {
           valueTypeName = `$Values<typeof ${valueTypeName}>`;
         }
-        if (valueType === MESSAGE_TYPE) {
-          valueTypeName += `$${objectTypeName}`;
-        }
-        toObjectType.printIndentedLn(`${camelCaseName}Map: Array<[${keyTypeName}${keyType === MESSAGE_TYPE ? `$${objectTypeName}` : ""}, ${valueTypeName}]>,`);
+        toObjectType.printIndentedLn(`${camelCaseName}: Array<[${keyTypeName}, ${valueTypeName}]>,`);
         return;
       }
       const withinNamespace = withinNamespaceFromExportEntryFlow(fullTypeName, fieldMessageType);
       if (fieldMessageType.fileName === fileName) {
-        exportType = `${withinNamespace}$${classTypeName}`;
+        exportType = `${withinNamespace}`;
       } else {
-        exportType = filePathToPseudoNamespace(fieldMessageType.fileName) + "." + `${withinNamespace}$${classTypeName}`;
+        exportType = filePathToPseudoNamespace(fieldMessageType.fileName) + "." + `${withinNamespace}`;
       }
     } else if (type === ENUM_TYPE) {
       const fieldEnumType = exportMap.getEnum(fullTypeName);
@@ -145,10 +140,10 @@ export function printMessage(fileName: string, exportMap: ExportMap, messageDesc
     if (field.getLabel() === FieldDescriptorProto.Label.LABEL_REPEATED) {// is repeated
       printClearIfNotPresent();
       if (type === BYTES_TYPE) {
-        toObjectType.printIndentedLn(`${camelCaseName}List: Array<Uint8Array | string>,`);
+        toObjectType.printIndentedLn(`${camelCaseName}: Array<Uint8Array | string>,`);
         printRepeatedAddMethod("Uint8Array | string");
       } else {
-        toObjectType.printIndentedLn(`${camelCaseName}List: Array<${exportType}${type === MESSAGE_TYPE ? `$${objectTypeName}` : ""}>,`);
+        toObjectType.printIndentedLn(`${camelCaseName}: Array<${exportType}>,`);
         printRepeatedAddMethod(exportType);
       }
     } else {
@@ -158,7 +153,7 @@ export function printMessage(fileName: string, exportMap: ExportMap, messageDesc
         let fieldObjectType = exportType;
         let canBeUndefined = false;
         if (type === MESSAGE_TYPE) {
-          fieldObjectType += `$${objectTypeName}`;
+          // fieldObjectType += `$${objectTypeName}`;
           if (!isProto2(fileDescriptor) || (field.getLabel() === FieldDescriptorProto.Label.LABEL_OPTIONAL)) {
             canBeUndefined = true;
           }
