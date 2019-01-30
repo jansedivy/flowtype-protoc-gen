@@ -60,8 +60,9 @@ In the above example, the `generated` folder will contain both `.js` and `.flow.
 
 ```js
 import { MyMessage } from "../generated/users_pb";
+import { MyMessage$AsClass } from "../generated/users_pb.flow";
 
-const msg = new MyMessage();
+const msg: MyMessage$AsClass = new MyMessage();
 msg.setName("John Doe");
 ```
 
