@@ -1,5 +1,7 @@
 import {
-  filePathToPseudoNamespace, snakeToCamel, uppercaseFirst, oneOfName, isProto2,
+  filePathToPseudoNamespace, snakeToCamel,
+  // uppercaseFirst, oneOfName,
+  isProto2,
   normaliseFieldObjectName, withinNamespaceFromExportEntryFlow
 } from "../util";
 import {ExportMap} from "../ExportMap";
@@ -61,7 +63,7 @@ export function printMessage(fileName: string, exportMap: ExportMap, messageDesc
     }
     const snakeCaseName = field.getName().toLowerCase();
     const camelCaseName = snakeToCamel(snakeCaseName);
-    const withUppercase = uppercaseFirst(camelCaseName);
+    // const withUppercase = uppercaseFirst(camelCaseName);
     const type = field.getType();
 
     let exportType;
@@ -133,18 +135,18 @@ export function printMessage(fileName: string, exportMap: ExportMap, messageDesc
       printClearIfNotPresent();
     }
 
-    function printRepeatedAddMethod(valueType: string) {
-      const optionalValue = field.getType() === MESSAGE_TYPE;
-    }
+    // function printRepeatedAddMethod(valueType: string) {
+    //   const optionalValue = field.getType() === MESSAGE_TYPE;
+    // }
 
     if (field.getLabel() === FieldDescriptorProto.Label.LABEL_REPEATED) {// is repeated
       printClearIfNotPresent();
       if (type === BYTES_TYPE) {
         toObjectType.printIndentedLn(`${camelCaseName}: Array<Uint8Array | string>,`);
-        printRepeatedAddMethod("Uint8Array | string");
+        // printRepeatedAddMethod("Uint8Array | string");
       } else {
         toObjectType.printIndentedLn(`${camelCaseName}: Array<${exportType}>,`);
-        printRepeatedAddMethod(exportType);
+        // printRepeatedAddMethod(exportType);
       }
     } else {
       if (type === BYTES_TYPE) {
