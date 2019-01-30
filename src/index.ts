@@ -1,4 +1,4 @@
-import { printFileDescriptorTSD } from "./ts/fileDescriptorTSD";
+import {printFileDescriptorTSD} from "./ts/fileDescriptorTSD";
 import {printFileDescriptorFlow} from "./flow/fileDescriptorFlow";
 import {ExportMap} from "./ExportMap";
 import {replaceProtoSuffix, withAllStdIn} from "./util";
@@ -29,7 +29,7 @@ withAllStdIn((inputBuff: Buffer) => {
     // Generate separate `.ts` files for services if param is set
     const generateServices = params.indexOf("service=true") !== -1;
 
-    const generateFlow = params.indexOf("flow=true") !== -1;
+    const generateTs = params.indexOf("ts=true") !== -1;
 
     codeGenRequest.getProtoFileList().forEach(protoFileDescriptor => {
       fileNameToDescriptor[protoFileDescriptor.getName()] = protoFileDescriptor;
@@ -39,18 +39,19 @@ withAllStdIn((inputBuff: Buffer) => {
     codeGenRequest.getFileToGenerateList().forEach(fileName => {
       const outputFileName = replaceProtoSuffix(fileName);
 
-      if (generateFlow) {
-        // Generate Flowtype Files
-        const thisFileFlow = new CodeGeneratorResponse.File();
-        thisFileFlow.setName(outputFileName + ".flow.js");
-        thisFileFlow.setContent(printFileDescriptorFlow(fileNameToDescriptor[fileName], exportMap));
-        codeGenResponse.addFile(thisFileFlow);
-      } else {
+
+      if (generateTs) {
         // Generate TS Files
         const thisFile = new CodeGeneratorResponse.File();
         thisFile.setName(outputFileName + ".d.ts");
         thisFile.setContent(printFileDescriptorTSD(fileNameToDescriptor[fileName], exportMap));
         codeGenResponse.addFile(thisFile);
+      } else {
+        // Generate Flowtype Files
+        const thisFileFlow = new CodeGeneratorResponse.File();
+        thisFileFlow.setName(outputFileName + ".flow.js");
+        thisFileFlow.setContent(printFileDescriptorFlow(fileNameToDescriptor[fileName], exportMap));
+        codeGenResponse.addFile(thisFileFlow);
       }
 
       if (generateServices) {
@@ -61,7 +62,7 @@ withAllStdIn((inputBuff: Buffer) => {
 
     process.stdout.write(new Buffer(codeGenResponse.serializeBinary()));
   } catch (err) {
-    console.error("protoc-gen-ts error: " + err.stack + "\n");
+    console.error("protoc-gen-flow error: " + err.stack + "\n");
     process.exit(1);
   }
 });
