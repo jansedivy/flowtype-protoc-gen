@@ -1,3 +1,4 @@
+import {printFileDescriptorTSD} from "./ts/fileDescriptorTSD";
 import {printFileDescriptorFlow} from "./flow/fileDescriptorFlow";
 import {ExportMap} from "./ExportMap";
 import {replaceProtoSuffix, withAllStdIn} from "./util";
@@ -28,6 +29,8 @@ withAllStdIn((inputBuff: Buffer) => {
     // Generate separate `.ts` files for services if param is set
     const generateServices = params.indexOf("service=true") !== -1;
 
+    const generateTs = params.indexOf("ts=true") !== -1;
+
     codeGenRequest.getProtoFileList().forEach(protoFileDescriptor => {
       fileNameToDescriptor[protoFileDescriptor.getName()] = protoFileDescriptor;
       exportMap.addFileDescriptor(protoFileDescriptor);
@@ -36,11 +39,20 @@ withAllStdIn((inputBuff: Buffer) => {
     codeGenRequest.getFileToGenerateList().forEach(fileName => {
       const outputFileName = replaceProtoSuffix(fileName);
 
-      // Generate Flowtype Files
-      const thisFileFlow = new CodeGeneratorResponse.File();
-      thisFileFlow.setName(outputFileName + ".flow.js");
-      thisFileFlow.setContent(printFileDescriptorFlow(fileNameToDescriptor[fileName], exportMap));
-      codeGenResponse.addFile(thisFileFlow);
+
+      if (generateTs) {
+        // Generate TS Files
+        const thisFile = new CodeGeneratorResponse.File();
+        thisFile.setName(outputFileName + ".d.ts");
+        thisFile.setContent(printFileDescriptorTSD(fileNameToDescriptor[fileName], exportMap));
+        codeGenResponse.addFile(thisFile);
+      } else {
+        // Generate Flowtype Files
+        const thisFileFlow = new CodeGeneratorResponse.File();
+        thisFileFlow.setName(outputFileName + ".flow.js");
+        thisFileFlow.setContent(printFileDescriptorFlow(fileNameToDescriptor[fileName], exportMap));
+        codeGenResponse.addFile(thisFileFlow);
+      }
 
       if (generateServices) {
         generateGrpcWebService(outputFileName, fileNameToDescriptor[fileName], exportMap)
