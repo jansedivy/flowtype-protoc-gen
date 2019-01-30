@@ -2,7 +2,7 @@ import {
   filePathToPseudoNamespace, snakeToCamel,
   // uppercaseFirst, oneOfName,
   isProto2,
-  normaliseFieldObjectName, withinNamespaceFromExportEntryFlow
+  normaliseFieldObjectName, withinNamespaceFromExportEntryFlowJson
 } from "../util";
 import {ExportMap} from "../ExportMap";
 import {
@@ -38,7 +38,7 @@ function hasFieldPresence(field: FieldDescriptorProto, fileDescriptor: FileDescr
 
 export function printMessage(fileName: string, exportMap: ExportMap, messageDescriptor: DescriptorProto, indentLevel: number, fileDescriptor: FileDescriptorProto, prefixName?: string) {
 
-  const messageName = prefixName && prefixName !== "" ? `${prefixName}_${messageDescriptor.getName() + "$AsClass"}` : messageDescriptor.getName() + "$AsClass";
+  const messageName = prefixName && prefixName !== "" ? `${prefixName}_${messageDescriptor.getName()}` : messageDescriptor.getName();
   const messageOptions = messageDescriptor.getOptions();
   if (messageOptions !== undefined && messageOptions.getMapEntry()) {
     // this message type is the entry tuple for a map - don't output it
@@ -90,7 +90,7 @@ export function printMessage(fileName: string, exportMap: ExportMap, messageDesc
         toObjectType.printIndentedLn(`${camelCaseName}: Array<[${keyTypeName}, ${valueTypeName}]>,`);
         return;
       }
-      const withinNamespace = withinNamespaceFromExportEntryFlow(fullTypeName, fieldMessageType);
+      const withinNamespace = withinNamespaceFromExportEntryFlowJson(fullTypeName, fieldMessageType);
       if (fieldMessageType.fileName === fileName) {
         exportType = `${withinNamespace}`;
       } else {
@@ -101,7 +101,7 @@ export function printMessage(fileName: string, exportMap: ExportMap, messageDesc
       if (fieldEnumType === undefined) {
         throw new Error("No enum export for: " + fullTypeName);
       }
-      const withinNamespace = withinNamespaceFromExportEntryFlow(fullTypeName, fieldEnumType);
+      const withinNamespace = withinNamespaceFromExportEntryFlowJson(fullTypeName, fieldEnumType);
       if (fieldEnumType.fileName === fileName) {
         exportType = `$Values<typeof ${withinNamespace}>`;
       } else {

@@ -38,9 +38,9 @@ export function getFieldType(type: FieldDescriptorProto.Type, typeName: string, 
     }
     const withinNamespace = withinNamespaceFromExportEntryFlow(typeName, fromExport);
     if (fromExport.fileName === currentFileName) {
-      return `${withinNamespace}$AsClass`;
+      return withinNamespace;
     } else {
-      return filePathToPseudoNamespace(fromExport.fileName) + "." + `${withinNamespace}$AsClass`;
+      return filePathToPseudoNamespace(fromExport.fileName) + "." + withinNamespace;
     }
   } else if (type === ENUM_TYPE) {
     const fromExport = exportMap.getEnum(typeName);
