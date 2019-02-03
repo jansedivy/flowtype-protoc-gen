@@ -4,6 +4,9 @@ Firstly, thanks for taking the time to contribute.
 
 The following is a set of guidelines for contributing to `flowtype-protoc-gen`.
 
+## Installing Node
+Use `nvm install` or reference the `.nvmrc` to see the node version we're using.
+
 ## Pull Request Process
 1. Implement your changes. If you're unsure how or would like clarification, please raise an [issue](https://github.com/chrisgervang/flowtype-protoc-gen/issues/new).
 2. Ensure your change has sufficient test coverage.
