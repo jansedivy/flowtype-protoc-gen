@@ -4,6 +4,18 @@
 
 import * as jspb from "google-protobuf";
 
+export const OrphanEnum = Object.freeze({
+  UNKNOWN: 0,
+  ONE: 1,
+  TWO: 2,
+})
+
+export const OrphanEnum$ReverseLookUp = Object.freeze({
+  "0": "UNKNOWN",
+  "1": "ONE",
+  "2": "TWO",
+})
+
 export class OrphanMapMessage$AsClass extends jspb.Message {
   getPrimitiveIntsMap: () => jspb.Map<string, number>;
   clearPrimitiveIntsMap: () => void;
@@ -82,16 +94,4 @@ export class OrphanStreamRequest$AsClass extends jspb.Message {
 export type OrphanStreamRequest$AsClass$AsObject = {
   someString: string,
 }
-
-export const OrphanEnum = Object.freeze({
-  UNKNOWN: 0,
-  ONE: 1,
-  TWO: 2,
-})
-
-export const OrphanEnum$ReverseLookUp = Object.freeze({
-  "0": "UNKNOWN",
-  "1": "ONE",
-  "2": "TWO",
-})
 

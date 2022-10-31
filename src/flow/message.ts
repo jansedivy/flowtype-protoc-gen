@@ -210,8 +210,12 @@ export function printMessage(fileName: string, exportMap: ExportMap, messageDesc
   printer.printIndentedLn(`static deserializeBinaryFromReader: (message: ${messageName}, reader: jspb.BinaryReader) => ${messageName};`);
 
   printer.printLn(`}`);
-  printer.printEmptyLn();
 
+  messageDescriptor.getEnumTypeList().forEach(enumType => {
+    printer.print(`${printEnum(enumType, indentLevel, messageName)}`);
+  });
+
+  printer.printEmptyLn();
   printer.print(toObjectType.getOutput());
 
   messageDescriptor.getNestedTypeList().forEach(nested => {
@@ -220,9 +224,6 @@ export function printMessage(fileName: string, exportMap: ExportMap, messageDesc
       // If the message class is a Map entry then it isn't output, so don't print the namespace block
       printer.print(msgOutput);
     }
-  });
-  messageDescriptor.getEnumTypeList().forEach(enumType => {
-    printer.print(`${printEnum(enumType, indentLevel, messageName)}`);
   });
   messageDescriptor.getOneofDeclList().forEach((oneOfDecl, index) => {
     printer.print(`${printOneOfDecl(oneOfDecl, oneOfGroups[index] || [], indentLevel, messageName)}`);

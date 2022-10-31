@@ -32,16 +32,16 @@ export function printFileDescriptorFlow(fileDescriptor: FileDescriptorProto, exp
     }
   });
 
+  fileDescriptor.getEnumTypeList().forEach(enumType => {
+    printer.print(printEnum(enumType, 0));
+  });
+
   fileDescriptor.getMessageTypeList().forEach(messageType => {
     printer.print(printMessage(fileName, exportMap, messageType, 0, fileDescriptor));
   });
 
   fileDescriptor.getExtensionList().forEach(extension => {
     printer.print(printExtension(fileName, exportMap, extension, 0));
-  });
-
-  fileDescriptor.getEnumTypeList().forEach(enumType => {
-    printer.print(printEnum(enumType, 0));
   });
 
   printer.printEmptyLn();

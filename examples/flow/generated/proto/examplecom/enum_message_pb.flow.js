@@ -32,13 +32,6 @@ export class EnumMessage$AsClass extends jspb.Message {
   static deserializeBinaryFromReader: (message: EnumMessage$AsClass, reader: jspb.BinaryReader) => EnumMessage$AsClass;
 }
 
-export type EnumMessage$AsClass$AsObject = {
-  internalEnum: $Values<typeof EnumMessage$AsClass_InternalEnum>,
-  internalEnumsList: Array<$Values<typeof EnumMessage$AsClass_InternalEnum>>,
-  externalEnum: $Values<typeof proto_othercom_external_enum_pb.ExternalEnum>,
-  externalEnumsList: Array<$Values<typeof proto_othercom_external_enum_pb.ExternalEnum>>,
-}
-
 export const EnumMessage$AsClass_InternalEnum = Object.freeze({
   DEFAULT: 0,
   FIRST: 1,
@@ -52,4 +45,11 @@ export const EnumMessage$AsClass_InternalEnum$ReverseLookUp = Object.freeze({
   "2": "SECOND",
   "3": "THIRD",
 })
+
+export type EnumMessage$AsClass$AsObject = {
+  internalEnum: $Values<typeof EnumMessage$AsClass_InternalEnum>,
+  internalEnumsList: Array<$Values<typeof EnumMessage$AsClass_InternalEnum>>,
+  externalEnum: $Values<typeof proto_othercom_external_enum_pb.ExternalEnum>,
+  externalEnumsList: Array<$Values<typeof proto_othercom_external_enum_pb.ExternalEnum>>,
+}
 

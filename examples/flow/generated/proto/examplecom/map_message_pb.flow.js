@@ -27,6 +27,18 @@ export class MapMessage$AsClass extends jspb.Message {
   static deserializeBinaryFromReader: (message: MapMessage$AsClass, reader: jspb.BinaryReader) => MapMessage$AsClass;
 }
 
+export const MapMessage$AsClass_InternalEnum = Object.freeze({
+  DEFAULT: 0,
+  FIRST: 1,
+  SECOND: 2,
+})
+
+export const MapMessage$AsClass_InternalEnum$ReverseLookUp = Object.freeze({
+  "0": "DEFAULT",
+  "1": "FIRST",
+  "2": "SECOND",
+})
+
 export type MapMessage$AsClass$AsObject = {
   internalEnumsMap: Array<[number, $Values<typeof MapMessage$AsClass_InternalEnum>]>,
   internalChildrenMap: Array<[string, MapMessage$AsClass_InternalChildMessage$AsClass$AsObject]>,
@@ -52,16 +64,4 @@ export class MapMessage$AsClass_InternalChildMessage$AsClass extends jspb.Messag
 export type MapMessage$AsClass_InternalChildMessage$AsClass$AsObject = {
   myString: string,
 }
-
-export const MapMessage$AsClass_InternalEnum = Object.freeze({
-  DEFAULT: 0,
-  FIRST: 1,
-  SECOND: 2,
-})
-
-export const MapMessage$AsClass_InternalEnum$ReverseLookUp = Object.freeze({
-  "0": "DEFAULT",
-  "1": "FIRST",
-  "2": "SECOND",
-})
 
